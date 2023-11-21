@@ -1,0 +1,9 @@
+﻿<h3>Fires By Cause</h3>
+
+@if (IsDone)
+{
+    <RadzenChart>
+        <RadzenColumnSeries Data="@countsByCause" CategoryProperty="Cause"  LineType="LineType.Solid" ValueProperty="FireCount" Title="Fires" />
+        <RadzenCategoryAxis Visible="false" />
+    </RadzenChart>
+}

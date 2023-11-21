@@ -1,0 +1,9 @@
+﻿<h3>Fires By Year</h3>
+
+@if (IsDone)
+{
+    <RadzenChart>
+        <RadzenLineSeries Data="@countsByYear" CategoryProperty="Year" LineType="LineType.Solid" ValueProperty="FireCount" Title="Fires" />
+        <RadzenCategoryAxis Step="1" />
+    </RadzenChart>
+}

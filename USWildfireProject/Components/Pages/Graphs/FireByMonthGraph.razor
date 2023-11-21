@@ -1,0 +1,9 @@
+﻿<h3>Fires By Month</h3>
+
+@if (IsDone)
+{
+    <RadzenChart>
+        <RadzenLineSeries Data="@countsByMonth" CategoryProperty="Month" ValueProperty="FireCount" Title="Fires" />
+        <RadzenCategoryAxis Step="1" Formatter="FormatMonth" />
+    </RadzenChart>
+}

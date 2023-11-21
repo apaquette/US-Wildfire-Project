@@ -1,0 +1,9 @@
+﻿<h3>Average Fire Containment by Class (lower is better)</h3>
+
+@if (IsDone)
+{
+    <RadzenChart>
+        <RadzenColumnSeries Data="@averageContainmentByClass" CategoryProperty="Class" LineType="LineType.Solid" ValueProperty="AverageContainment" Title="Fire Class" />
+        <RadzenCategoryAxis Step="1" />
+    </RadzenChart>
+}

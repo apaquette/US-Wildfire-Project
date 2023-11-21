@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Components\Pages\FireByMonthGraph - Copy.razor.cs" />
+    <Compile Remove="Components\Pages\FireByMonthGraph.razor.cs" />
+    <Compile Remove="Components\Pages\Graphs\FireByCauseGraph - Copy.razor.cs" />
+    <Compile Remove="Components\Pages\Graphs\FireByMonthGraph - Copy.razor.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Components\Pages\Graphs\FireContainmentByClassGraph.razor.cs" />
+    <Content Include="Components\Pages\Graphs\FireByCauseGraph.razor.cs" />
+    <Content Include="Components\Pages\Graphs\FireByYearGraph.razor.cs" />
+    <Content Include="Components\Pages\Graphs\FireByMonthGraph.razor.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.12">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.12">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Radzen.Blazor" Version="4.19.0" />
+    <PackageReference Include="Syncfusion.Blazor.Maps" Version="23.1.44" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="23.1.44" />
+  </ItemGroup>
+
+</Project>
