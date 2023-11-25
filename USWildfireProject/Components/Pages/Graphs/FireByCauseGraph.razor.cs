@@ -5,20 +5,20 @@ namespace USWildfireProject.Components.Pages.Graphs;
 
 public partial class FireByCauseGraph : ComponentBase
 {
-    private List<FireByCause> countsByCause;
+    private List<FireByCause> countsByCause = new();
     private bool IsDone = false;
     [Parameter, EditorRequired]
-    public List<Wildfire> Wildfires { get; set; }
+    public List<Wildfire>? Wildfires { get; set; }
     protected override void OnInitialized()
     {
         IsDone = false;
-        countsByCause = Wildfires.GroupBy(w => w.GeneralCause)
+        countsByCause = Wildfires?.GroupBy(w => w.GeneralCause)
                                     .Select(g => new FireByCause
                                     {
                                         Cause = g.Key,
                                         FireCount = g.Count()
                                     })
-                                    .ToList();
+                                    .ToList() ?? new();
         countsByCause.OrderByDescending(x => x.FireCount);
         IsDone = true;
     }

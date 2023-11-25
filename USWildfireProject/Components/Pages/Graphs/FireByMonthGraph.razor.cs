@@ -6,20 +6,20 @@ namespace USWildfireProject.Components.Pages.Graphs;
 
 public partial class FireByMonthGraph : ComponentBase
 {
-    private List<FireByMonth> countsByMonth;
+    private List<FireByMonth> countsByMonth = new();
     private bool IsDone = false;
     [Parameter, EditorRequired]
-    public List<Wildfire> Wildfires { get; set; }
+    public List<Wildfire>? Wildfires { get; set; }
     protected override void OnInitialized()
     {
         IsDone = false;
-        countsByMonth = Wildfires.GroupBy(w => int.Parse(w.DiscoverDate.Split("/")[0]))
+        countsByMonth = Wildfires?.GroupBy(w => int.Parse(w.DiscoverDate.Split("/")[0]))
                                     .Select(g => new FireByMonth
                                     {
                                         Month = g.Key,
                                         FireCount = g.Count()
                                     })
-                                    .ToList();
+                                    .ToList() ?? new();
         IsDone = true;
     }
     private string FormatMonth(object value)

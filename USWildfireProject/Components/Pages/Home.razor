@@ -1,6 +1,8 @@
 ﻿@using Microsoft.EntityFrameworkCore
 @using USWildfireProject.Data
 @using USWildfireProject.Models
+@using USWildfireProject.Components.Pages.Graphs
+@using USWildfireProject.Components.Pages
 @* @attribute [RenderModeInteractiveServer] *@
 @rendermode InteractiveServer
 @inject IDbContextFactory<WildfireContext> WildfireDataContextFactory
@@ -12,50 +14,11 @@
 <RadzenButton Click="ShowWildfires" @bind-IsBusy="@IsLoading" BusyText="Loading..." Text="Show Wildfires"/>
 @if (Wildfires is not null && Wildfires.Count > 0)
 {
-    <p>Total Wildfire Count: @Wildfires.Count()</p>
-    <p>Total Wildfire Count 1993: @Wildfires.Where(w => w.Year == 1993).ToList().Count()</p>
+    <RadzenText TextStyle="TextStyle.Body1" Text="@($"Total Wildfire Count: {Wildfires.Count()}")" />
     
-    <USWildfireProject.Components.Pages.Graphs.FireByYearGraph Wildfires="@Wildfires" />
-    @*<USWildfireProject.Components.Pages.Graphs.FireByMonthGraph Wildfires="@Wildfires" />
-    <USWildfireProject.Components.Pages.Graphs.FireByCauseGraph Wildfires="@Wildfires" />
-    <USWildfireProject.Components.Pages.Graphs.FireContainmentByClassGraph Wildfires="@Wildfires" /> *@
-
-    <SfMaps>
-        <MapsCenterPosition Latitude="35" Longitude="-95"></MapsCenterPosition>
-        <MapsZoomSettings Enable ZoomFactor="4">
-            <MapsZoomToolbarSettings>
-                <MapsZoomToolbarButton ToolbarItems="new List<ToolbarItem>() { ToolbarItem.Zoom, ToolbarItem.ZoomIn, ToolbarItem.ZoomOut,
-            ToolbarItem.Pan, ToolbarItem.Reset }"></MapsZoomToolbarButton>
-            </MapsZoomToolbarSettings>
-        </MapsZoomSettings>
-        <MapsLayers>
-            @* <MapsLayer ShapeData='new {dataOptions= "https://cdn.syncfusion.com/maps/map-data/usa.json"}' TValue="string">
-                <MapsMarkerSettings>
-                    <MapsMarker Visible="true" Height="25" Width="25" DataSource="Wildfires.Take(1000)" TValue="Wildfire" AnimationDuration="0" />
-                </MapsMarkerSettings>
-            </MapsLayer> *@
-            <MapsLayer UrlTemplate="https://tile.openstreetmap.org/level/tileX/tileY.png" TValue="string">
-                <MapsMarkerSettings>
-                    <MapsMarker Visible Height="25" Width="25" DataSource="Wildfires.Where(w => w.Year == 2005)" TValue="Wildfire" AnimationDuration="0" />
-                </MapsMarkerSettings>
-                <MapsMarkerClusterSettings  AllowClustering AllowClusterExpand Shape="Syncfusion.Blazor.Maps.MarkerType.Circle" Fill="#008CFF" Height="25" Width="25">
-                    <MapsLayerMarkerClusterLabelStyle Color="white"></MapsLayerMarkerClusterLabelStyle>
-                </MapsMarkerClusterSettings>
-            </MapsLayer>
-        </MapsLayers>
-
-    </SfMaps>
+    <FireMap Wildfires="Wildfires" />
+    <FireByYearGraph Wildfires="Wildfires" />
+    <FireByMonthGraph Wildfires="Wildfires" />
+    <FireByCauseGraph Wildfires="Wildfires" />
+    <FireContainmentByClassGraph Wildfires="Wildfires" />
 }
-
-@* @code{
-    public class City
-    {
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
-        public string Name { get; set; }
-    }
-    private List<City> Cities = new List<City> {
-        new City { Latitude = 34.060620, Longitude = -118.330491,  Name="California" },
-        new City{ Latitude = 40.724546, Longitude = -73.850344,  Name="New York"}
-    };
-} *@

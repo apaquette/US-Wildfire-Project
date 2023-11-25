@@ -1,0 +1,37 @@
+﻿@rendermode InteractiveServer
+
+<RadzenText TextStyle="TextStyle.H5" Text="Fire Map" />
+@if (IsDone)
+{
+    <div>
+        <RadzenText TextStyle="TextStyle.Subtitle2" Text="Selected Year: " />
+        <RadzenDropDown @bind-Value=@selectedYear Data=@years Change="ShowWildfires" />
+    </div>
+    <SfMaps>
+        <MapsCenterPosition Latitude="35" Longitude="-95"></MapsCenterPosition>
+        <MapsZoomSettings Enable ZoomFactor="4">
+                <MapsZoomToolbarSettings>
+                    <MapsZoomToolbarButton ToolbarItems="new List<ToolbarItem>() { ToolbarItem.Zoom, ToolbarItem.ZoomIn, ToolbarItem.ZoomOut,
+                ToolbarItem.Pan, ToolbarItem.Reset }"></MapsZoomToolbarButton>
+                </MapsZoomToolbarSettings>
+            </MapsZoomSettings>
+            <MapsLayers>
+            @*<MapsLayer ShapeData='new {dataOptions= "https://cdn.syncfusion.com/maps/map-data/usa.json"}' TValue="string">
+            <MapsMarkerSettings>
+            <MapsMarker Visible="true" Height="25" Width="25" DataSource='Wildfires.Where(w => w.Year == 1998 && (w.SizeClass == "G".ToCharArray()[0] || w.SizeClass == "F".ToCharArray()[0]))' TValue="Wildfire" AnimationDuration="0" />
+            </MapsMarkerSettings>
+            <MapsMarkerClusterSettings AllowClustering AllowClusterExpand Shape="Syncfusion.Blazor.Maps.MarkerType.Circle" Fill="#008CFF" Height="25" Width="25">
+            <MapsLayerMarkerClusterLabelStyle Color="white"></MapsLayerMarkerClusterLabelStyle>
+            </MapsMarkerClusterSettings>
+            </MapsLayer>*@
+            <MapsLayer UrlTemplate="https://tile.openstreetmap.org/level/tileX/tileY.png" TValue="string">
+                <MapsMarkerSettings>
+                    <MapsMarker Visible Height="25" Width="25" DataSource=FirePins TValue="FirePin" AnimationDuration="0" />
+                </MapsMarkerSettings>
+                <MapsMarkerClusterSettings AllowClustering AllowClusterExpand Shape="Syncfusion.Blazor.Maps.MarkerType.Circle" Fill="#008CFF" Height="25" Width="25">
+                    <MapsLayerMarkerClusterLabelStyle Color="white"></MapsLayerMarkerClusterLabelStyle>
+                </MapsMarkerClusterSettings>
+            </MapsLayer>
+        </MapsLayers>
+    </SfMaps>
+}
