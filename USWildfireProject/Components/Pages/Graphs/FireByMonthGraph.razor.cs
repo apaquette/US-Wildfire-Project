@@ -13,6 +13,7 @@ public partial class FireByMonthGraph : ComponentBase
     protected override void OnInitialized()
     {
         IsDone = false;
+
         countsByMonth = Wildfires?.GroupBy(w => int.Parse(w.DiscoverDate.Split("/")[0]))
                                     .Select(g => new FireByMonth
                                     {
@@ -29,6 +30,7 @@ public partial class FireByMonthGraph : ComponentBase
     }
     protected class FireByMonth
     {
+        public int Year { get; set; }
         public int Month { get; set; }
         public int FireCount { get; set; }
     }

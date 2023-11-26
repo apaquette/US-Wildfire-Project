@@ -12,9 +12,9 @@ public partial class Home : ComponentBase
     private WildfireContext? _context;
     public async Task ShowWildfires()
     {
-        IsLoading = true;
-        await Task.Delay(10);
-        _context ??= await WildfireDataContextFactory.CreateDbContextAsync();
+        IsLoading = true;       
+        await Task.Delay(1);    //this is here to fix a bug with the radzen button
+        _context = await WildfireDataContextFactory.CreateDbContextAsync();
 
         if (_context is not null)
         {
@@ -27,7 +27,7 @@ public partial class Home : ComponentBase
             }
         }
 
-        if (_context is not null) await _context.DisposeAsync();
+        if (_context is not null) await _context.DisposeAsync();//releases allocated resources when done loading data
         IsLoading = false;
     }
 }

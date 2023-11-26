@@ -11,10 +11,107 @@
 
 <PageTitle>Home</PageTitle>
 
-<RadzenButton Click="ShowWildfires" @bind-IsBusy="@IsLoading" BusyText="Loading..." Text="Show Wildfires"/>
+<RadzenButton Click="ShowWildfires" @bind-IsBusy="@IsLoading" BusyText="Loading..." Text="Show Wildfires" Visible="@(_context == null)"/>
+<RadzenTabs RenderMode="TabRenderMode.Server">
+    <Tabs>
+        <RadzenTabsItem Text="Description">
+            <RadzenText TextStyle="TextStyle.Body1">
+                The button above will pull from a Wildfires database that has been prepared for use in this project. Before processing, the dataset contained 
+                49 columns, which was reduced to 17 columns. This reduced the data size to 257MB down from 1GB. When clicking the button, the data gets loaded into a
+                list of type Wildfires, which is a custom C# class create to contained all of the remaining fields to be used for data analysis. Once loaded, it gets
+                distributed to custom components which each seperately simplify the data for their own uses.
+            </RadzenText>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Show Wildfires Code">
+            <pre>
+            <code class="language-csharp">
+private bool IsLoading = false;
+public List&lt;Wildfire>? Wildfires { get; set; }
+private WildfireContext? _context;
+
+public async Task ShowWildfires()
+{
+    IsLoading = true;
+    await Task.Delay(1);   //this is here to fix a bug with the radzen button
+    _context ??= await WildfireDataContextFactory.CreateDbContextAsync();
+
+    if (_context is not null)
+    {
+        try
+        {
+            Wildfires = await _context.Wildfires.ToListAsync();
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    if (_context is not null) await _context.DisposeAsync();
+    IsLoading = false;
+}
+                        </code>
+                    </pre>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Wildfire Class">
+            <pre>
+            <code class="language-csharp">
+public class Wildfire
+{
+    public int Id { get; set; }
+    public int Year { get; set; }
+    public string? DiscoverDate { get; set; }
+    public int DiscoveryDayOfYear { get; set; }
+    public string? DiscoverTime { get; set; }
+    public string? CauseClassification { get; set; }
+    public string? GeneralCause { get; set; }
+    public string? CauseAgeCategory { get; set; }
+    public string? ContainmentDate { get; set; }
+    public int? ContainmentDayOfYear { get; set; }
+    public string? ContainmentTime { get; set; }
+    public double Size { get; set; }
+    public char SizeClass { get; set; }
+    public decimal Latitude { get; set; }
+    public decimal Longitude { get; set; }
+    public string? State { get; set; }
+    public string? County { get; set; }
+
+    public decimal GetContainmentTime()
+    {
+        string format = "M/d/yyyy HHmm";
+        if (string.IsNullOrEmpty(DiscoverTime)) DiscoverTime = "0000";
+        DateTime discoverDate = DateTime.ParseExact($"{DiscoverDate} {DiscoverTime}", format , null);
+        DateTime containmentDate = DateTime.ParseExact($"{ContainmentDate} {ContainmentTime}", format, null);
+        return Convert.ToDecimal((containmentDate - discoverDate).TotalMinutes);
+    }
+}
+                        </code>
+                    </pre>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Wildfire Context">
+            <pre>
+            <code class="language-csharp">
+public class WildfireContext : DbContext
+{
+    protected readonly IConfiguration Configuration;
+    public WildfireContext(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlite(Configuration.GetConnectionString("WildfireDB"));
+    }
+    public DbSet&lt;Wildfire> Wildfires { get; set; }
+}
+                        </code>
+                    </pre>
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>
 @if (Wildfires is not null && Wildfires.Count > 0)
 {
-    <RadzenText TextStyle="TextStyle.Body1" Text="@($"Total Wildfire Count: {Wildfires.Count()}")" />
+    <RadzenText TextStyle="TextStyle.Caption" Text="@($"Total Wildfire Count: {Wildfires.Count()}")" />
     
     <FireMap Wildfires="Wildfires" />
     <FireByYearGraph Wildfires="Wildfires" />

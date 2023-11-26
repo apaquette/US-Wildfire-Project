@@ -1,5 +1,20 @@
 ﻿@rendermode InteractiveServer
 
+<style>
+    pre {
+        background-color: #f4f4f4;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+    }
+
+    code {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+    }
+</style>
+
+
 <RadzenText TextStyle="TextStyle.H5" Text="Fire Map" />
 @if (IsDone)
 {
@@ -8,30 +23,102 @@
         <RadzenDropDown @bind-Value=@selectedYear Data=@years Change="ShowWildfires" />
     </div>
     <SfMaps>
-        <MapsCenterPosition Latitude="35" Longitude="-95"></MapsCenterPosition>
+        <MapsCenterPosition Latitude="35" Longitude="-95" />
         <MapsZoomSettings Enable ZoomFactor="4">
                 <MapsZoomToolbarSettings>
-                    <MapsZoomToolbarButton ToolbarItems="new List<ToolbarItem>() { ToolbarItem.Zoom, ToolbarItem.ZoomIn, ToolbarItem.ZoomOut,
-                ToolbarItem.Pan, ToolbarItem.Reset }"></MapsZoomToolbarButton>
+                    <MapsZoomToolbarButton ToolbarItems="new List<ToolbarItem>() { ToolbarItem.Zoom, ToolbarItem.ZoomIn, ToolbarItem.ZoomOut,ToolbarItem.Pan, ToolbarItem.Reset }" />
                 </MapsZoomToolbarSettings>
-            </MapsZoomSettings>
-            <MapsLayers>
-            @*<MapsLayer ShapeData='new {dataOptions= "https://cdn.syncfusion.com/maps/map-data/usa.json"}' TValue="string">
-            <MapsMarkerSettings>
-            <MapsMarker Visible="true" Height="25" Width="25" DataSource='Wildfires.Where(w => w.Year == 1998 && (w.SizeClass == "G".ToCharArray()[0] || w.SizeClass == "F".ToCharArray()[0]))' TValue="Wildfire" AnimationDuration="0" />
-            </MapsMarkerSettings>
-            <MapsMarkerClusterSettings AllowClustering AllowClusterExpand Shape="Syncfusion.Blazor.Maps.MarkerType.Circle" Fill="#008CFF" Height="25" Width="25">
-            <MapsLayerMarkerClusterLabelStyle Color="white"></MapsLayerMarkerClusterLabelStyle>
-            </MapsMarkerClusterSettings>
-            </MapsLayer>*@
+        </MapsZoomSettings>
+        <MapsLayers>
             <MapsLayer UrlTemplate="https://tile.openstreetmap.org/level/tileX/tileY.png" TValue="string">
                 <MapsMarkerSettings>
                     <MapsMarker Visible Height="25" Width="25" DataSource=FirePins TValue="FirePin" AnimationDuration="0" />
                 </MapsMarkerSettings>
                 <MapsMarkerClusterSettings AllowClustering AllowClusterExpand Shape="Syncfusion.Blazor.Maps.MarkerType.Circle" Fill="#008CFF" Height="25" Width="25">
-                    <MapsLayerMarkerClusterLabelStyle Color="white"></MapsLayerMarkerClusterLabelStyle>
+                    <MapsLayerMarkerClusterLabelStyle Color="white" />
                 </MapsMarkerClusterSettings>
             </MapsLayer>
         </MapsLayers>
     </SfMaps>
+    <RadzenTabs RenderMode="TabRenderMode.Server">
+        <Tabs>
+            <RadzenTabsItem Text="Description">
+                <RadzenText TextStyle="TextStyle.Body1">
+                    This map denotes fires geographically on an Syncfusion map component using OpenStreetMap. The component takes a simpliefied object
+                    composed of longitutde and latitude coordinates for each fire and displays its position on the map as a pin. The component has clustering
+                    enabled which will merge pins together into a single object with a count of how many pins are contained. Due to hardware limitations, the map
+                    only shows fires by year, and only high category class fires (Class F and G). This map can help us see where fires typically happen in the US,
+                    as well as giving us a visual representaiton of how fires have become more (or less prevalant) from year to year. It also clearly shows how fires
+                    tend to concentrate in areas of the country with less precipitation:
+                </RadzenText>
+                <a href="https://www.climate.gov/news-features/featured-images/new-maps-annual-average-temperature-and-precipitation-us-climate" target="_blank"><img src="images/USPrecipitation.png" style="width: 80%;" /></a>
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="Razor">
+<pre>
+    <code>
+@("<SfMaps>")
+    @("<MapsCenterPosition Latitude=\"35\" Longitude=\"-95\" />")
+    @("<MapsZoomSettings Enable ZoomFactor=\"4\">")
+        @("<MapsZoomToolbarSettings>")
+            @("<MapsZoomToolbarButton ToolbarItems=\"new List<ToolbarItem>() { ToolbarItem.Zoom, ToolbarItem.ZoomIn, ToolbarItem.ZoomOut,ToolbarItem.Pan, ToolbarItem.Reset }\" />")
+        @("</MapsZoomToolbarSettings>")
+    @("</MapsZoomSettings>")
+    @("<MapsLayers>")
+        @("<MapsLayer UrlTemplate=\"https://tile.openstreetmap.org/level/tileX/tileY.png\" TValue=\"string\">")
+        @("<MapsMarkerSettings>")
+            @("<MapsMarker Visible Height=\"25\" Width=\"25\" DataSource=FirePins TValue=\"FirePin\" AnimationDuration=\"0\" />")
+        @("</MapsMarkerSettings>")
+        @("<MapsMarkerClusterSettings AllowClustering AllowClusterExpand Shape=\"Syncfusion.Blazor.Maps.MarkerType.Circle\" Fill=\"#008CFF\" Height=\"25\" Width=\"25\">")
+            @("<MapsLayerMarkerClusterLabelStyle Color=\"white\" />")
+        @("</MapsMarkerClusterSettings>")
+        @("</MapsLayer>")
+    @("</MapsLayers>")
+@("</SfMaps>")
+    </code>
+</pre>
+            </RadzenTabsItem>
+            <RadzenTabsItem Text="C#">
+                <pre>
+                <code class="language-csharp">
+public partial class FireMap : ComponentBase
+{
+    private List&lt;FirePin> FirePins = new();
+    private bool IsDone = false;
+    private int selectedYear;
+    private List&lt;int> years = new();
+    [Parameter, EditorRequired]
+    public List&lt;Wildfire>? Wildfires { get; set; }
+
+    protected override void OnInitialized()
+    {
+        IsDone = false;
+        years = Wildfires?.GroupBy(x => x.Year).Select(x => x.Key).ToList() ?? new();
+        years.Sort();
+        selectedYear = years.FirstOrDefault();
+        ShowWildfires();
+        IsDone = true;
+    }
+
+    public void ShowWildfires()
+    {
+        FirePins = Wildfires?.Where(w => w.Year == selectedYear && (w.SizeClass == "G".ToCharArray()[0] || w.SizeClass == "F".ToCharArray()[0]))
+                            .Select(f => new FirePin
+                            {
+                                Latitude = f.Latitude,
+                                Longitude = f.Longitude
+                            })
+                            .ToList() ?? new();
+    }
+
+    protected class FirePin
+    {
+        public decimal Latitude { get; set; }
+        public decimal Longitude { get; set; }
+    }
+}
+                        </code>
+                    </pre>
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
 }
