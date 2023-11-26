@@ -1,1 +1,1 @@
-# US Wildfires Project V2
+# US Wildfires Project
