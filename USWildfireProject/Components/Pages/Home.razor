@@ -3,15 +3,17 @@
 @using USWildfireProject.Models
 @using USWildfireProject.Components.Pages.Graphs
 @using USWildfireProject.Components.Pages
-@* @attribute [RenderModeInteractiveServer] *@
 @rendermode InteractiveServer
 @inject IDbContextFactory<WildfireContext> WildfireDataContextFactory
 
 @page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>US Wildfires</PageTitle>
 
-<RadzenButton Click="ShowWildfires" @bind-IsBusy="@IsLoading" BusyText="Loading..." Text="Show Wildfires" Visible="@(_context == null)"/>
+<RadzenRow>
+    <RadzenButton Click="ShowWildfires" @bind-IsBusy="@IsLoading" BusyText="Loading..." Text="Show Wildfires" Visible="@(_context == null)"/>
+    <a href="https://github.com/apaquette/USWildfireProject" style="font-size: 1.5rem;" target="_blank"><i class="bi-github" /></a>
+</RadzenRow>
 <RadzenTabs RenderMode="TabRenderMode.Server">
     <Tabs>
         <RadzenTabsItem Text="Description">
@@ -24,7 +26,7 @@
         </RadzenTabsItem>
         <RadzenTabsItem Text="Show Wildfires Code">
             <pre>
-            <code class="language-csharp">
+                <code class="language-csharp">
 private bool IsLoading = false;
 public List&lt;Wildfire>? Wildfires { get; set; }
 private WildfireContext? _context;
@@ -49,8 +51,8 @@ public async Task ShowWildfires()
     if (_context is not null) await _context.DisposeAsync();
     IsLoading = false;
 }
-                        </code>
-                    </pre>
+                </code>
+            </pre>
         </RadzenTabsItem>
         <RadzenTabsItem Text="Wildfire Class">
             <pre>

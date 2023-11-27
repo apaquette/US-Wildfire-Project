@@ -1,8 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using Syncfusion.Blazor;
 using USWildfireProject.Components;
 using USWildfireProject.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Syncfusion.Blazor;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("WildfireDB");
