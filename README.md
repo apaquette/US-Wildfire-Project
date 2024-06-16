@@ -18,7 +18,7 @@ This is my main project for my Data Science and Machine Learning module at South
 
 ## Technologies Used
 
-- [.NET 8]
+- [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - [C#](https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29)
 - [Entity Framework](https://learn.microsoft.com/en-us/aspnet/entity-framework)
 - [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor)
